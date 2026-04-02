@@ -16,7 +16,7 @@
  */
 
 import type { TwinRef, UserContext, CouncilSynthesis } from './twin_engine';
-import type { IMemoryEngine } from './memory_engine';
+import type { MemoryEngine } from './memory_engine';
 
 // ============================================================================
 // Core Types
@@ -88,10 +88,10 @@ export interface TwinPersona {
 // ============================================================================
 
 /**
- * Load council twin profiles from JSON files
- * Dynamically loaded at runtime
+ * Default council twin profiles
+ * Loaded dynamically at runtime
  */
-private councilTwinsData: Map<CouncilTwinId, TwinPersona> | null = null;
+const DEFAULT_COUNCIL_TWINS: Record<CouncilTwinId, TwinPersona> = {
   strategist: {
     id: 'strategist',
     name: 'The Strategist',
@@ -223,10 +223,10 @@ Always ask: "What are we not seeing?"`,
 export class CouncilEngine {
   private twins: Map<CouncilTwinId, TwinPersona>;
   private activeSession: Map<string, CouncilTwinId[]>;
-  private memoryEngine?: IMemoryEngine;
+  private memoryEngine?: MemoryEngine;
   private isolationLocks: Map<string, boolean>;
 
-  constructor(memoryEngine?: IMemoryEngine) {
+  constructor(memoryEngine?: MemoryEngine) {
     this.twins = new Map();
     this.activeSession = new Map();
     this.memoryEngine = memoryEngine;
@@ -571,14 +571,15 @@ Risk Tolerance: ${twin.riskTolerance}`;
       .map(([point]) => point);
 
     // Identify tensions (Guardrail 2: MUST NOT silence Critic)
-    const areasOfTension = this.identifyTensions(responses);
+    const tensionObjects = this.identifyTensions(responses);
+    const areasOfTension = tensionObjects.map(t => `${t.twins.join(' vs ')}: ${t.tension}`);
 
     // Extract recommended actions
     const recommendedActions: string[] = [];
     for (const response of responses) {
       for (const point of response.keyPoints) {
         const lower = point.toLowerCase();
-        if (lower.includes('recommend') || lower.includes('should') || lower.includes('consider')) || {
+        if (lower.includes('recommend') || lower.includes('should') || lower.includes('consider')) {
           recommendedActions.push(point);
         }
       }
@@ -592,14 +593,14 @@ Risk Tolerance: ${twin.riskTolerance}`;
     let confidenceLevel: 'low' | 'medium' | 'high';
     if (consensusRatio >= 0.8 && areasOfTension.length === 0) {
       confidenceLevel = 'high';
-    } else if (consensusRatio >= 0.6) || areasOfTension.length <= 2) {
+    } else if (consensusRatio >= 0.6 || areasOfTension.length <= 2) {
       confidenceLevel = 'medium';
     } else {
       confidenceLevel = 'low';
     }
 
     // Guardrail 2: If high-confidence critical risk remains unresolved, highlight it
-    if (areasOfTension.some(t => t.twins.includes('Critic'))) {
+    if (tensionObjects.some(t => t.twins.includes('Critic'))) {
       // Ensure synthesis doesn't hide the tension
       confidenceLevel = confidenceLevel === 'high' ? 'medium' : confidenceLevel;
     }
@@ -610,7 +611,6 @@ Risk Tolerance: ${twin.riskTolerance}`;
       recommendedActions,
       confidenceLevel,
       consensusRatio,
-      timestamp: new Date(),
     };
   }
 
@@ -641,12 +641,12 @@ Risk Tolerance: ${twin.riskTolerance}`;
 
     output += `\n**Areas of Tension:**\n`;
     for (const tension of synthesis.areasOfTension) {
-      output += `- ${tension.tension} (${tension.twins.join(' vs ')})\n`;
+      output += `- ${tension}\n`;
     }
 
     output += `\n**Recommended Actions:**\n`;
     for (const action of synthesis.recommendedActions) {
-      output += `${recommendedActions.indexOf(action) + 1}. ${action}\n`;
+      output += `${synthesis.recommendedActions.indexOf(action) + 1}. ${action}\n`;
     }
 
     output += `\n**Council Confidence:** ${synthesis.confidenceLevel} (${Math.round(synthesis.consensusRatio * 100)}% consensus)\n`;
@@ -681,7 +681,7 @@ Risk Tolerance: ${twin.riskTolerance}`;
 /**
  * Create a configured CouncilEngine instance
  */
-export function createCouncilEngine(memoryEngine?: IMemoryEngine): CouncilEngine {
+export function createCouncilEngine(memoryEngine?: MemoryEngine): CouncilEngine {
   return new CouncilEngine(memoryEngine);
 }
 

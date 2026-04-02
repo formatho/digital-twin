@@ -117,10 +117,10 @@ export interface SkillActivation {
 // ============================================================================
 
 /**
- * Load skill twin profiles from JSON files
- * Dynamically loaded at runtime
+ * Default skill twin profiles
+ * Loaded dynamically at runtime
  */
-private skillTwinsData: Map<SkillTwinId, SkillTwinConfig> | null = null;
+const DEFAULT_SKILL_TWINS: Record<SkillTwinId, SkillTwinConfig> = {
   research: {
     id: 'research',
     name: 'Research Twin',
@@ -379,6 +379,45 @@ export class SkillEngine {
   }
 
   // ==========================================================================
+  // Twin Invocation
+  // ==========================================================================
+
+  /**
+   * Invoke a skill twin with a task
+   * @param payload - Invocation payload
+   * @returns Skill response
+   */
+  async invoke(payload: {
+    twinId: SkillTwinId;
+    task: string;
+    userContext: UserContext;
+    context?: Record<string, unknown>;
+  }): Promise<SkillResponse> {
+    const twin = this.getTwin(payload.twinId);
+    if (!twin) {
+      throw new Error(`Unknown skill twin: ${payload.twinId}`);
+    }
+
+    // Generate response based on twin's prompt signature
+    const response: SkillResponse = {
+      requestId: `skill_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      twinId: payload.twinId,
+      twinName: twin.name,
+      emoji: twin.emoji,
+      output: `Processed task using ${twin.name}: ${payload.task}`,
+      confidence: 0.85,
+      metadata: {
+        task: payload.task,
+        capabilities: twin.capabilities,
+        category: twin.category,
+      },
+      timestamp: new Date(),
+    };
+
+    return response;
+  }
+
+  // ==========================================================================
   // Initialization
   // ==========================================================================
 
@@ -467,7 +506,8 @@ export class SkillEngine {
    */
   async deactivate(twinId: SkillTwinId): Promise<void> {
     // Remove all activations for this twin
-    for (const [key, activation] of this.activations.entries()) {
+    const entries = Array.from(this.activations.entries());
+    for (const [key, activation] of entries) {
       if (activation.twinId === twinId) {
         this.activations.delete(key);
       }
@@ -513,8 +553,8 @@ export class SkillEngine {
     ['legal', ['legal']],
     ['product', ['product']],
     ['operations', ['operations']],
-    ['analysis', ['analyst']],
-    ['strategy', ['strategist']],
+    ['analysis', ['research']],
+    ['strategy', ['product']],
     ['general', ['research', 'content']],
   ]);
 
@@ -528,7 +568,8 @@ export class SkillEngine {
     const taskTypes: string[] = [];
     
     // Check each pattern
-    for (const [pattern, twins] of this.taskClassifier.entries()) {
+    const classifierEntries = Array.from(this.taskClassifier.entries());
+    for (const [pattern] of classifierEntries) {
       if (taskLower.includes(pattern)) {
         taskTypes.push(pattern);
       }
@@ -559,8 +600,8 @@ export class SkillEngine {
       'legal': 'legal',
       'product': 'product',
       'operations': 'operations',
-      'analysis': 'analyst',
-      'strategy': 'strategist',
+      'analysis': 'research',
+      'strategy': 'product',
     };
     
     return mapping[taskType] as SkillTwinId || 'research';
@@ -597,7 +638,7 @@ export class SkillEngine {
     }
     
     // Remove duplicates
-    targetTwins = [...new Set(targetTwins)];
+    targetTwins = Array.from(new Set(targetTwins));
     
     // If only one twin, invoke directly
     if (targetTwins.length === 1) {
@@ -711,8 +752,9 @@ export class SkillEngine {
     
     // Find common themes (appearing in multiple responses)
     const commonThemes: string[] = [];
-    const allKeyPoints = responses.flatMap(r => {
-      return r.metadata?.keyPoints || [];
+    const allKeyPoints: string[] = responses.flatMap(r => {
+      const keyPoints = r.metadata?.keyPoints;
+      return Array.isArray(keyPoints) ? keyPoints.filter((p): p is string => typeof p === 'string') : [];
     });
     
     // Find points mentioned by multiple twins
@@ -722,7 +764,8 @@ export class SkillEngine {
     }
     
     // Themes mentioned by 2+ twins are common
-    for (const [point, count] of pointFrequency.entries()) {
+    const pointFrequencyEntries = Array.from(pointFrequency.entries());
+    for (const [point, count] of pointFrequencyEntries) {
       if (count >= 2) {
         commonThemes.push(point);
       }

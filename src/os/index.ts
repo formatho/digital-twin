@@ -8,6 +8,13 @@
  * @created April 2, 2026
  */
 
+// Import for internal use in this file
+import { createTwinEngine } from './twin_engine';
+import { createCouncilEngine } from './council_engine';
+import { createSkillEngine } from './skill_engine';
+import { createMarketplaceEngine } from './marketplace_engine';
+import { createMemoryEngine } from './memory_engine';
+
 // Core Engines
 export { TwinEngine, createTwinEngine } from './twin_engine';
 export type {
@@ -29,7 +36,7 @@ export type {
   TeamConfig,
 } from './twin_engine';
 
-export { CouncilEngine, createCouncilEngine, COUNCIL_TWINS } from './council_engine';
+export { CouncilEngine, createCouncilEngine } from './council_engine';
 export type {
   CouncilTwinId,
   CouncilTwinResponse,
@@ -38,7 +45,7 @@ export type {
   TwinPersona,
 } from './council_engine';
 
-export { SkillEngine, createSkillEngine, SKILL_TWINS } from './skill_engine';
+export { SkillEngine, createSkillEngine } from './skill_engine';
 export type {
   SkillTwinId,
   SkillCategory,
@@ -79,13 +86,7 @@ export type {
 /**
  * Initialize all engines with default configuration
  */
-export async function initializeDigitalTwinOS(): Promise<{
-  twinEngine: TwinEngine;
-  councilEngine: CouncilEngine;
-  skillEngine: SkillEngine;
-  marketplaceEngine: MarketplaceEngine;
-  memoryEngine: MemoryEngine;
-}> {
+export async function initializeDigitalTwinOS() {
   const memoryEngine = createMemoryEngine();
   const councilEngine = createCouncilEngine();
   const skillEngine = createSkillEngine();

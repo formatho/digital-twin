@@ -10,7 +10,7 @@
  */
 
 import type { TwinRef, UserContext } from './twin_engine';
-import type { IMemoryEngine } from './memory_engine';
+import type { MemoryEngine } from './memory_engine';
 import type { SkillTwinId } from './skill_engine';
 
 // ============================================================================
@@ -70,6 +70,7 @@ export interface MarketplaceListing {
   usageCount: number;
   isActivated: boolean;
   tags: string[];
+  capabilities?: string[];
 }
 
 /**
@@ -162,7 +163,7 @@ export class MarketplaceEngine {
   private teams: Map<string, TwinTeam>;
   private templates: Map<string, TeamTemplate>;
   private userActivations: Map<string, Set<string>>;
-  private memoryEngine?: IMemoryEngine;
+  private memoryEngine?: MemoryEngine;
   private skillTwinProfiles: Map<string, any>;
 
   // Valid Skill Twin IDs (Guardrail 2: Only predefined twins)
@@ -171,7 +172,7 @@ export class MarketplaceEngine {
     'marketing', 'sales', 'legal', 'product', 'operations'
   ];
 
-  constructor(memoryEngine?: IMemoryEngine) {
+  constructor(memoryEngine?: MemoryEngine) {
     this.teams = new Map();
     this.templates = new Map(TEAM_TEMPLATES.map(t => [t.id, t]));
     this.userActivations = new Map();
@@ -405,6 +406,7 @@ export class MarketplaceEngine {
           type: 'twin_activation',
           twinId,
         },
+        status: 'active',
       });
     }
 
@@ -437,6 +439,7 @@ export class MarketplaceEngine {
           type: 'twin_deactivation',
           twinId,
         },
+        status: 'active',
       });
     }
 
@@ -502,6 +505,7 @@ export class MarketplaceEngine {
           type: 'twin_team',
           teamId,
         },
+        status: 'active',
       });
     }
 
@@ -649,7 +653,8 @@ export class MarketplaceEngine {
       .map(t => ({ id: t.id, name: t.name, usageCount: t.usageCount }));
 
     let totalActivations = 0;
-    for (const activations of this.userActivations.values()) {
+    const activationSets = Array.from(this.userActivations.values());
+    for (const activations of activationSets) {
       totalActivations += activations.size;
     }
 
@@ -688,7 +693,7 @@ export class MarketplaceEngine {
 /**
  * Create a configured MarketplaceEngine instance
  */
-export function createMarketplaceEngine(memoryEngine?: IMemoryEngine): MarketplaceEngine {
+export function createMarketplaceEngine(memoryEngine?: MemoryEngine): MarketplaceEngine {
   return new MarketplaceEngine(memoryEngine);
 }
 

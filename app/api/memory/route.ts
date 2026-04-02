@@ -152,6 +152,7 @@ export async function POST(request: NextRequest) {
       key: body.key,
       value: body.value,
       metadata: body.metadata || {},
+      status: 'active',
     });
 
     return NextResponse.json({

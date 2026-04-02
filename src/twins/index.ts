@@ -22,12 +22,12 @@ import legalProfile from './skills/legal.json';
 import productProfile from './skills/product.json';
 import operationsProfile from './skills/operations.json';
 
-export {
+export const twinRegistry = {
   council: {
     strategist: strategistProfile,
     builder: builderProfile,
-    analyst: analystProfile
-    operator: operatorProfile
+    analyst: analystProfile,
+    operator: operatorProfile,
     critic: criticProfile,
   },
   skills: {
@@ -41,5 +41,11 @@ export {
     legal: legalProfile,
     product: productProfile,
     operations: operationsProfile,
-  }
+  },
 };
+
+export type CouncilTwinId = 'strategist' | 'builder' | 'analyst' | 'operator' | 'critic';
+export type SkillTwinId = 'research' | 'content' | 'design' | 'growth' | 'code' | 'marketing' | 'sales' | 'legal' | 'product' | 'operations';
+
+export const COUNCIL_TWINS: CouncilTwinId[] = ['strategist', 'builder', 'analyst', 'operator', 'critic'];
+export const SKILL_TWINS: SkillTwinId[] = ['research', 'content', 'design', 'growth', 'code', 'marketing', 'sales', 'legal', 'product', 'operations'];

@@ -1,4 +1,4 @@
-import '../src/styles/globals.css';
+import '../../src/styles/globals.css';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import GlassWrapper from './components/GlassWrapper';

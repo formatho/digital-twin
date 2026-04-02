@@ -9,8 +9,8 @@
  * @created April 2, 2026
  */
 
-import type { CouncilEngine, CouncilPayload, CouncilResponse } from './council_engine';
-import type { SkillEngine, SkillPayload, SkillResponse } from './skill_engine';
+import type { CouncilEngine, CouncilPayload, CouncilResponse, CouncilTwinId } from './council_engine';
+import type { SkillEngine, SkillPayload, SkillResponse, SkillTwinId } from './skill_engine';
 import type { MarketplaceEngine, TwinTeam, TwinActivation } from './marketplace_engine';
 import type { MemoryEngine, MemoryTier, MemoryQuery, MemoryRecord } from './memory_engine';
 
@@ -281,6 +281,7 @@ export class TwinEngine {
           sessionId: payload.userContext.sessionId,
           mode: payload.type,
         },
+        status: 'active',
       });
 
       // Step 3: Route to appropriate engine
@@ -313,6 +314,7 @@ export class TwinEngine {
           sessionId: payload.userContext.sessionId,
           duration: Date.now() - startTime,
         },
+        status: 'active',
       });
 
       response.duration = Date.now() - startTime;
@@ -420,7 +422,7 @@ export class TwinEngine {
     if (routing.skillRequired && routing.skillTwinId) {
       // Route to skill engine
       const skillPayload: SkillPayload = {
-        twinId: routing.skillTwinId,
+        twinId: routing.skillTwinId as SkillTwinId,
         task: payload.content,
         userContext: payload.userContext,
       };
@@ -449,7 +451,7 @@ export class TwinEngine {
       const councilPayload: CouncilPayload = {
         question: payload.content,
         userContext: payload.userContext,
-        specificTwinId: routing.targetTwin.id,
+        specificTwinId: routing.targetTwin.id as CouncilTwinId,
         includeSynthesis: false,
       };
 
@@ -503,7 +505,7 @@ export class TwinEngine {
       const skillTwin = routing.targetTwins.find(t => t.type === 'skill');
       if (skillTwin) {
         const skillPayload: SkillPayload = {
-          twinId: skillTwin.id,
+          twinId: skillTwin.id as SkillTwinId,
           task: payload.content,
           userContext: payload.userContext,
         };
@@ -530,7 +532,7 @@ export class TwinEngine {
     const bestTwin = await this.findBestSkillTwin(assignment.taskType);
     if (bestTwin) {
       const skillPayload: SkillPayload = {
-        twinId: bestTwin.id,
+        twinId: bestTwin.id as SkillTwinId,
         task: payload.content,
         userContext: payload.userContext,
       };

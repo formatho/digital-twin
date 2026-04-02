@@ -1,4 +1,4 @@
-import '../src/styles/globals.css';
+import '../../src/styles/globals.css';
 
 export const metadata = {
   title: 'Digital Twin OS - AI-Powered Decision Intelligence',
