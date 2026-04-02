@@ -1,0 +1,27 @@
+/* Digital Twin OS - Global Styles */
+
+:root {
+  --color-primary: #3b82f6;
+  --color-secondary: #8b5cf6;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background-color: #f9fafb;
+}
+
+/* Twin Colors */
+.twin-strategist { --twin-color: #3b82f6; }
+.twin-builder { --twin-color: #8b5cf6; }
+.twin-analyst { --twin-color: #10b981; }
+.twin-operator { --twin-color: #f59e0b; }
+.twin-critic { --twin-color: #ef4444; }
