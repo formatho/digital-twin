@@ -26,7 +26,7 @@ const METRICS = [
     value: 127,
     change: '+12%',
     emoji: '🎯',
-    color: '#3b82f6',
+    color: 'var(--color-primary)',
     description: 'Council deliberations completed',
   },
   {
@@ -35,7 +35,7 @@ const METRICS = [
     value: 842,
     change: '+28%',
     emoji: '⚡',
-    color: '#8b5cf6',
+    color: 'var(--color-secondary)',
     description: 'Skill twin tasks completed',
   },
   {
@@ -44,7 +44,7 @@ const METRICS = [
     value: '94%',
     change: '+5%',
     emoji: '🧠',
-    color: '#10b981',
+    color: 'var(--color-success)',
     description: 'Contextual memory efficiency',
   },
   {
@@ -53,7 +53,7 @@ const METRICS = [
     value: 15,
     change: '0',
     emoji: '🤖',
-    color: '#f59e0b',
+    color: 'var(--color-warning)',
     description: '5 Council + 10 Skill twins',
   },
 ];
@@ -109,10 +109,10 @@ const RECENT_ACTIVITY = [
 
 // Quick actions
 const QUICK_ACTIONS = [
-  { label: 'Ask Council', href: '/council', emoji: '🎯', color: '#3b82f6' },
-  { label: 'Browse Twins', href: '/marketplace', emoji: '🏪', color: '#8b5cf6' },
-  { label: 'View Memory', href: '/memory', emoji: '🧠', color: '#10b981' },
-  { label: 'Create Workflow', href: '/workflows', emoji: '⚡', color: '#f59e0b' },
+  { label: 'Ask Council', href: '/council', emoji: '🎯', color: 'var(--color-primary)' },
+  { label: 'Browse Twins', href: '/marketplace', emoji: '🏪', color: 'var(--color-secondary)' },
+  { label: 'View Memory', href: '/memory', emoji: '🧠', color: 'var(--color-success)' },
+  { label: 'Create Workflow', href: '/workflows', emoji: '⚡', color: 'var(--color-warning)' },
 ];
 
 export default function DashboardPage() {

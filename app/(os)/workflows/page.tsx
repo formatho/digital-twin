@@ -23,7 +23,7 @@ const WORKFLOW_TEMPLATES = [
     name: 'Weekly Content Engine',
     description: 'Generate weekly blog + social content from topic input',
     emoji: '📝',
-    color: '#3b82f6',
+    color: 'var(--color-primary)',
     steps: [
       { twinId: 'research', name: 'Research', emoji: '🔬', prompt: 'Research trending topics in {topic}' },
       { twinId: 'content', name: 'Content', emoji: '✍️', prompt: 'Write blog post based on research' },
@@ -36,7 +36,7 @@ const WORKFLOW_TEMPLATES = [
     name: 'Competitor Analysis',
     description: 'Deep-dive into competitor landscape with insights',
     emoji: '🔍',
-    color: '#8b5cf6',
+    color: 'var(--color-secondary)',
     steps: [
       { twinId: 'research', name: 'Research', emoji: '🔬', prompt: 'Identify top 5 competitors in {market}' },
       { twinId: 'analyst', name: 'Analyst', emoji: '📊', prompt: 'Analyze competitive positioning' },
@@ -48,7 +48,7 @@ const WORKFLOW_TEMPLATES = [
     name: 'Code Review Pipeline',
     description: 'Automated code review with security & quality checks',
     emoji: '💻',
-    color: '#10b981',
+    color: 'var(--color-success)',
     steps: [
       { twinId: 'code', name: 'Code', emoji: '💻', prompt: 'Review code for best practices' },
       { twinId: 'critic', name: 'Critic', emoji: '🧐', prompt: 'Identify potential security issues' },
@@ -59,18 +59,18 @@ const WORKFLOW_TEMPLATES = [
 
 // Available twins for selection
 const AVAILABLE_TWINS = [
-  { id: 'strategist', name: 'Strategist', emoji: '🎯', color: '#3b82f6' },
-  { id: 'builder', name: 'Builder', emoji: '🔧', color: '#8b5cf6' },
-  { id: 'analyst', name: 'Analyst', emoji: '📊', color: '#10b981' },
-  { id: 'operator', name: 'Operator', emoji: '⚙️', color: '#f59e0b' },
-  { id: 'critic', name: 'Critic', emoji: '🧐', color: '#ef4444' },
-  { id: 'research', name: 'Research', emoji: '🔬', color: '#6366f1' },
-  { id: 'content', name: 'Content', emoji: '✍️', color: '#ec4899' },
-  { id: 'design', name: 'Design', emoji: '🎨', color: '#f97316' },
-  { id: 'growth', name: 'Growth', emoji: '📈', color: '#14b8a6' },
-  { id: 'code', name: 'Code', emoji: '💻', color: '#22c55e' },
-  { id: 'marketing', name: 'Marketing', emoji: '📢', color: '#a855f7' },
-  { id: 'sales', name: 'Sales', emoji: '💰', color: '#fbbf24' },
+  { id: 'strategist', name: 'Strategist', emoji: '🎯', color: 'var(--color-primary)' },
+  { id: 'builder', name: 'Builder', emoji: '🔧', color: 'var(--color-secondary)' },
+  { id: 'analyst', name: 'Analyst', emoji: '📊', color: 'var(--color-success)' },
+  { id: 'operator', name: 'Operator', emoji: '⚙️', color: 'var(--color-warning)' },
+  { id: 'critic', name: 'Critic', emoji: '🧐', color: 'var(--color-error)' },
+  { id: 'research', name: 'Research', emoji: '🔬', color: 'var(--color-primary)' },
+  { id: 'content', name: 'Content', emoji: '✍️', color: 'var(--color-secondary)' },
+  { id: 'design', name: 'Design', emoji: '🎨', color: 'var(--color-warning)' },
+  { id: 'growth', name: 'Growth', emoji: '📈', color: 'var(--color-success)' },
+  { id: 'code', name: 'Code', emoji: '💻', color: 'var(--color-success)' },
+  { id: 'marketing', name: 'Marketing', emoji: '📢', color: 'var(--color-secondary)' },
+  { id: 'sales', name: 'Sales', emoji: '💰', color: 'var(--color-warning)' },
 ];
 
 // Workflow step interface

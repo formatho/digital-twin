@@ -19,11 +19,11 @@ import { useState, useEffect } from 'react';
 
 // Twin profiles from Phase 2 JSON
 const COUNCIL_TWINS = [
-  { id: 'strategist', name: 'The Strategist', emoji: '🎯', color: '#3b82f6' },
-  { id: 'builder', name: 'The Builder', emoji: '🔧', color: '#8b5cf6' },
-  { id: 'analyst', name: 'The Analyst', emoji: '📊', color: '#10b981' },
-  { id: 'operator', name: 'The Operator', emoji: '⚙️', color: '#f59e0b' },
-  { id: 'critic', name: 'The Critic', emoji: '🧐', color: '#ef4444' },
+  { id: 'strategist', name: 'The Strategist', emoji: '🎯', color: 'var(--color-primary)' },
+  { id: 'builder', name: 'The Builder', emoji: '🔧', color: 'var(--color-secondary)' },
+  { id: 'analyst', name: 'The Analyst', emoji: '📊', color: 'var(--color-success)' },
+  { id: 'operator', name: 'The Operator', emoji: '⚙️', color: 'var(--color-warning)' },
+  { id: 'critic', name: 'The Critic', emoji: '🧐', color: 'var(--color-error)' },
 ];
 
 // Content Twin: Loading microcopy for each twin
