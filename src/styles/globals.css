@@ -1,5 +1,9 @@
 /* Digital Twin OS - Global Styles & Design Tokens */
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   /* Primary Colors */
   --color-primary: #3b82f6;
@@ -152,3 +156,71 @@ body {
 
 .animate-float { animation: float 6s ease-in-out infinite; }
 .animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+
+/* Glass Card Variants */
+.glass-card-interactive {
+  composes: glass-card;
+  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+}
+.glass-card-interactive:hover {
+  transform: scale(1.03);
+  box-shadow: var(--glow-primary-sm);
+}
+
+/* Glass Input */
+.glass-input {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  padding: var(--spacing-sm) var(--spacing-md);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  outline: none;
+}
+.glass-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+.glass-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Glass Button */
+.glass-btn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+}
+.glass-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.glass-btn-primary {
+  composes: glass-btn;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  border: none;
+}
+.glass-btn-primary:hover {
+  opacity: 0.9;
+  box-shadow: var(--glow-primary-sm);
+}
+
+/* Status Dot */
+.status-dot-active {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--color-success);
+  box-shadow: 0 0 10px var(--color-success);
+}
+.status-dot-idle {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--text-muted);
+}

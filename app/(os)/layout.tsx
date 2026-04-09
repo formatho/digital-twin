@@ -1,7 +1,6 @@
 import '../../src/styles/globals.css';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
-import GlassWrapper from './components/GlassWrapper';
 
 export const metadata = {
   title: 'Digital Twin OS - Dashboard',
@@ -29,11 +28,9 @@ export default function OSLayout({
           userName="Founder"
         />
 
-        {/* Page Content with Glass Wrapper */}
+        {/* Page Content */}
         <main className="flex-1 p-6 overflow-y-auto">
-          <GlassWrapper>
-            {children}
-          </GlassWrapper>
+          {children}
         </main>
       </div>
     </div>

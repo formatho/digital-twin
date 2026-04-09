@@ -1,508 +1,701 @@
 /**
- * Main Dashboard Page
- * 
- * Mission control center for Digital Twin OS.
- * Provides high-level overview of active twins, activity, and memory.
- * 
- * Multi-Skill Pipeline:
- * - Product Twin: Dashboard layout architecture
- * - Design Twin: Glass Morphism widgets with ambient glows
- * - Code Twin: Responsive CSS Grid/Flexbox layout
- * - Analyst Twin: Key performance metrics
- * 
+ * AI Project Builder Dashboard
+ *
+ * The CORE product experience - a magical AI project builder where:
+ * 1. User inputs what they want to build
+ * 2. Council Twins (5 AI perspectives) debate the request in parallel
+ * 3. Business Requirements Document, Architecture Diagram, and Agent Identification are generated
+ * 4. User reviews and approves/modifies/rejects
+ * 5. Skill Twins execute the plan with real-time progress tracking
+ *
  * @module app/(os)/dashboard/page
  */
 
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import {
+  Rocket,
+  Send,
+  CheckCircle2,
+  XCircle,
+  Edit3,
+  FileText,
+  Network,
+  Users,
+  Clock,
+  Sparkles,
+  Activity,
+  Code,
+  Palette,
+  Target,
+  BarChart3,
+  Settings,
+  AlertCircle
+} from 'lucide-react';
 
-// Analyst Twin: Key Performance Metrics
-const METRICS = [
+// Council Twins - Phase 1 (Always active)
+const COUNCIL_TWINS = [
   {
-    id: 'decisions',
-    label: 'Decisions Synthesized',
-    value: 127,
-    change: '+12%',
-    emoji: '🎯',
-    color: 'var(--color-primary)',
-    description: 'Council deliberations completed',
+    id: 'strategist',
+    name: 'Strategist',
+    icon: Target,
+    color: '#3b82f6',
+    description: 'Vision & Long-term Thinking'
   },
   {
-    id: 'tasks',
-    label: 'Tasks Executed',
-    value: 842,
-    change: '+28%',
-    emoji: '⚡',
-    color: 'var(--color-secondary)',
-    description: 'Skill twin tasks completed',
+    id: 'builder',
+    name: 'Builder',
+    icon: Code,
+    color: '#8b5cf6',
+    description: 'Execution & Implementation'
   },
   {
-    id: 'memory',
-    label: 'Memory Optimized',
-    value: '94%',
-    change: '+5%',
-    emoji: '🧠',
-    color: 'var(--color-success)',
-    description: 'Contextual memory efficiency',
+    id: 'analyst',
+    name: 'Analyst',
+    icon: BarChart3,
+    color: '#10b981',
+    description: 'Data & Metrics'
   },
   {
-    id: 'active',
-    label: 'Active Twins',
-    value: 15,
-    change: '0',
-    emoji: '🤖',
-    color: 'var(--color-warning)',
-    description: '5 Council + 10 Skill twins',
+    id: 'operator',
+    name: 'Operator',
+    icon: Settings,
+    color: '#f59e0b',
+    description: 'Systems & Processes'
+  },
+  {
+    id: 'critic',
+    name: 'Critic',
+    icon: AlertCircle,
+    color: '#ef4444',
+    description: 'Risk Assessment'
   },
 ];
 
-// Active twins in workspace
-const ACTIVE_TWINS = [
-  { id: 'strategist', name: 'Strategist', emoji: '🎯', status: 'active', lastActive: '2m ago' },
-  { id: 'builder', name: 'Builder', emoji: '🔧', status: 'active', lastActive: '5m ago' },
-  { id: 'critic', name: 'Critic', emoji: '🧐', status: 'active', lastActive: '2m ago' },
-  { id: 'research', name: 'Research', emoji: '🔬', status: 'active', lastActive: '15m ago' },
-  { id: 'content', name: 'Content', emoji: '✍️', status: 'idle', lastActive: '1h ago' },
+// Skill Twins - Phase 2 (Activated by council as needed)
+const SKILL_TWINS = [
+  { id: 'research', name: 'Research', icon: Sparkles, color: '#06b6d4' },
+  { id: 'content', name: 'Content', icon: FileText, color: '#f472b6' },
+  { id: 'design', name: 'Design', icon: Palette, color: '#a78bfa' },
+  { id: 'growth', name: 'Growth', icon: Activity, color: '#34d399' },
+  { id: 'code', name: 'Code', icon: Code, color: '#60a5fa' },
 ];
 
-// Recent council activity
-const RECENT_ACTIVITY = [
-  {
-    id: 1,
-    type: 'council',
-    question: 'Should we expand into enterprise sales next quarter?',
-    summary: 'Council recommended pilot program with 3-5 design partners',
-    twins: ['🎯', '🔧', '🧐'],
-    timestamp: '2 minutes ago',
-    confidence: 0.77,
-  },
-  {
-    id: 2,
-    type: 'skill',
-    question: 'Research competitive landscape for AI tools',
-    summary: 'Research Twin analyzed 12 competitors, identified 3 key differentiators',
-    twins: ['🔬'],
-    timestamp: '15 minutes ago',
-    confidence: 0.92,
-  },
-  {
-    id: 3,
-    type: 'council',
-    question: 'Prioritize Q2 product roadmap features',
-    summary: 'Council identified 3 high-impact features, flagged 2 risks',
-    twins: ['🎯', '📊', '⚙️'],
-    timestamp: '1 hour ago',
-    confidence: 0.85,
-  },
-  {
-    id: 4,
-    type: 'team',
-    question: 'Launch marketing campaign for new feature',
-    summary: 'Growth Team executed multi-channel campaign strategy',
-    twins: ['📈', '📢', '✍️'],
-    timestamp: '3 hours ago',
-    confidence: 0.88,
-  },
-];
-
-// Quick actions
-const QUICK_ACTIONS = [
-  { label: 'Ask Council', href: '/council', emoji: '🎯', color: 'var(--color-primary)' },
-  { label: 'Browse Twins', href: '/marketplace', emoji: '🏪', color: 'var(--color-secondary)' },
-  { label: 'View Memory', href: '/memory', emoji: '🧠', color: 'var(--color-success)' },
-  { label: 'Create Workflow', href: '/workflows', emoji: '⚡', color: 'var(--color-warning)' },
-];
+type ProjectPhase = 'input' | 'council' | 'review' | 'execution' | 'complete';
 
 export default function DashboardPage() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [phase, setPhase] = useState<ProjectPhase>('input');
+  const [userInput, setUserInput] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedTab, setSelectedTab] = useState<'brd' | 'architecture' | 'agents'>('brd');
+
+  // Simulated council debate messages
+  const [councilMessages, setCouncilMessages] = useState<Array<{
+    twinId: string;
+    message: string;
+    timestamp: Date;
+  }>>([]);
+
+  // Active agents in execution phase
+  const [activeAgents, setActiveAgents] = useState<Array<{
+    id: string;
+    name: string;
+    task: string;
+    status: 'pending' | 'active' | 'completed';
+    progress: number;
+  }>>([]);
 
   useEffect(() => {
-    // Simulate data fetch
-    const timer = setTimeout(() => setIsLoading(false), 500);
-    return () => clearTimeout(timer);
-  }, []);
+    if (phase === 'council') {
+      // Simulate council debate
+      const debateInterval = setInterval(() => {
+        const randomTwin = COUNCIL_TWINS[Math.floor(Math.random() * COUNCIL_TWINS.length)];
+        const messages = [
+          'Analyzing technical feasibility...',
+          'Considering long-term scalability implications...',
+          'Evaluating user experience requirements...',
+          'Assessing potential risks and mitigation strategies...',
+          'Identifying key performance metrics...',
+          'Mapping out system architecture...',
+          'Reviewing security considerations...',
+        ];
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+
+        setCouncilMessages(prev => [...prev, {
+          twinId: randomTwin.id,
+          message: randomMessage,
+          timestamp: new Date(),
+        }]);
+
+        // Transition to review after enough messages
+        if (councilMessages.length >= 8) {
+          clearInterval(debateInterval);
+          setTimeout(() => setPhase('review'), 1000);
+        }
+      }, 800);
+
+      return () => clearInterval(debateInterval);
+    }
+  }, [phase, councilMessages.length]);
+
+  const handleSubmit = () => {
+    if (!userInput.trim()) return;
+    setIsSubmitting(true);
+
+    // Simulate processing
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setPhase('council');
+      setCouncilMessages([]);
+    }, 500);
+  };
+
+  const handleApprove = () => {
+    setPhase('execution');
+    // Activate skill twins
+    setActiveAgents([
+      { id: 'research', name: 'Research', task: 'Market research & competitor analysis', status: 'active', progress: 65 },
+      { id: 'design', name: 'Design', task: 'UI/UX wireframes and prototypes', status: 'active', progress: 40 },
+      { id: 'code', name: 'Code', task: 'Frontend implementation with React', status: 'pending', progress: 0 },
+      { id: 'content', name: 'Content', task: 'Copywriting and documentation', status: 'pending', progress: 0 },
+    ]);
+  };
+
+  const handleModify = () => {
+    setUserInput('');
+    setPhase('input');
+  };
+
+  const handleReject = () => {
+    setUserInput('');
+    setPhase('input');
+    setCouncilMessages([]);
+  };
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
-            Dashboard
-          </h1>
-          <p style={{ color: 'var(--text-secondary)' }}>
-            Mission control for your Digital Twin OS
-          </p>
-        </div>
-        <div 
-          className="px-4 py-2 rounded-full text-sm"
-          style={{
-            background: 'rgba(16, 185, 129, 0.2)',
-            color: 'var(--color-success)',
-          }}
-        >
-          <span className="inline-block w-2 h-2 rounded-full mr-2" style={{ background: 'var(--color-success)' }} />
-          All Systems Operational
-        </div>
-      </div>
+    <div className="min-h-screen" style={{ background: 'var(--bg-dark)' }}>
+      {/* Hero Input Section */}
+      {phase === 'input' && (
+        <div className="container mx-auto px-6 py-12 max-w-4xl">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 mb-6">
+              <Rocket className="w-8 h-8" style={{ color: 'var(--color-primary)' }} />
+              <h1 className="text-4xl lg:text-5xl font-bold">
+                <span className="gradient-text">AI Project Builder</span>
+              </h1>
+            </div>
+            <p className="text-xl" style={{ color: 'var(--text-secondary)' }}>
+              5 Council Twins debate your vision. Skill Twins execute with precision.
+            </p>
+          </div>
 
-      {/* Metric Cards (Analyst Twin + Design Twin) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {METRICS.map((metric) => (
           <div
-            key={metric.id}
-            className="p-6 rounded-xl transition-all hover:scale-105"
-            style={{
-              background: `linear-gradient(135deg, ${metric.color}15, ${metric.color}08)`,
-              border: `1px solid ${metric.color}30`,
-              boxShadow: `0 0 30px ${metric.color}10`,
-            }}
-          >
-            <div className="flex items-start justify-between mb-4">
-              <div 
-                className="text-3xl p-3 rounded-xl"
-                style={{ background: `${metric.color}20` }}
-              >
-                {metric.emoji}
-              </div>
-              <span 
-                className="text-sm font-semibold"
-                style={{ color: metric.change.startsWith('+') ? 'var(--color-success)' : 'var(--text-muted)' }}
-              >
-                {metric.change}
-              </span>
-            </div>
-            <div 
-              className="text-3xl font-bold mb-1"
-              style={{ color: 'var(--text-primary)' }}
-            >
-              {typeof metric.value === 'number' ? metric.value.toLocaleString() : metric.value}
-            </div>
-            <div 
-              className="text-sm font-medium mb-1"
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              {metric.label}
-            </div>
-            <div 
-              className="text-xs"
-              style={{ color: 'var(--text-muted)' }}
-            >
-              {metric.description}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Main Content Grid (Product Twin) */}
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* Activity Feed - Takes 2 columns */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Quick Actions */}
-          <div 
-            className="p-6 rounded-xl"
+            className="glass-card p-8 mb-8"
             style={{
               background: 'var(--glass-bg)',
               border: '1px solid var(--glass-border)',
             }}
           >
-            <h2 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
-              Quick Actions
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {QUICK_ACTIONS.map((action) => (
-                <Link
-                  key={action.href}
-                  href={action.href}
-                  className="p-4 rounded-xl text-center transition-all hover:scale-105"
-                  style={{
-                    background: `${action.color}10`,
-                    border: `1px solid ${action.color}30`,
-                  }}
-                >
-                  <div className="text-2xl mb-2">{action.emoji}</div>
-                  <div className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-                    {action.label}
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
+            <label className="block text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
+              What do you want to build?
+            </label>
+            <textarea
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)}
+              placeholder="Describe your project in detail... (e.g., 'Build me an e-commerce platform with Stripe payments, user authentication, and inventory management')"
+              className="glass-input w-full h-48 text-base resize-none"
+              style={{
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid var(--glass-border)',
+              }}
+            />
 
-          {/* Recent Activity Feed */}
-          <div 
-            className="p-6 rounded-xl"
-            style={{
-              background: 'var(--glass-bg)',
-              border: '1px solid var(--glass-border)',
-            }}
-          >
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
-                Recent Activity
-              </h2>
-              <Link 
-                href="/council"
-                className="text-sm"
-                style={{ color: 'var(--color-primary)' }}
-              >
-                View All →
-              </Link>
-            </div>
-
-            <div className="space-y-4">
-              {RECENT_ACTIVITY.map((activity) => (
-                <div
-                  key={activity.id}
-                  className="p-4 rounded-lg transition-all hover:bg-white/5"
-                  style={{ background: 'rgba(255, 255, 255, 0.02)' }}
-                >
-                  <div className="flex items-start gap-4">
-                    {/* Twin Emojis */}
-                    <div className="flex -space-x-2">
-                      {activity.twins.map((emoji, i) => (
-                        <div 
-                          key={i}
-                          className="w-10 h-10 rounded-full flex items-center justify-center text-lg"
-                          style={{
-                            background: 'var(--glass-bg)',
-                            border: '2px solid var(--bg-dark-secondary)',
-                            marginLeft: i > 0 ? '-8px' : '0',
-                          }}
-                        >
-                          {emoji}
-                        </div>
-                      ))}
+            <div className="flex items-center justify-between mt-6">
+              <div className="flex gap-2">
+                {COUNCIL_TWINS.slice(0, 3).map((twin) => {
+                  const Icon = twin.icon;
+                  return (
+                    <div
+                      key={twin.id}
+                      className="w-10 h-10 rounded-lg flex items-center justify-center"
+                      style={{ background: `${twin.color}20` }}
+                      title={twin.name}
+                    >
+                      <Icon className="w-5 h-5" style={{ color: twin.color }} />
                     </div>
+                  );
+                })}
+                <span className="text-sm ml-2" style={{ color: 'var(--text-muted)' }}>
+                  +2 more twins ready
+                </span>
+              </div>
 
-                    {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span 
+              <button
+                onClick={handleSubmit}
+                disabled={!userInput.trim() || isSubmitting}
+                className="glass-btn-primary px-8 py-3 rounded-xl font-semibold flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Activating Council...
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-5 h-5" />
+                    Start Council Debate
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Quick Stats */}
+          <div className="grid grid-cols-3 gap-4">
+            <div className="glass-card p-4 text-center">
+              <div className="text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>5</div>
+              <div className="text-sm" style={{ color: 'var(--text-muted)' }}>Council Twins</div>
+            </div>
+            <div className="glass-card p-4 text-center">
+              <div className="text-2xl font-bold" style={{ color: 'var(--color-secondary)' }}>10</div>
+              <div className="text-sm" style={{ color: 'var(--text-muted)' }}>Skill Twins</div>
+            </div>
+            <div className="glass-card p-4 text-center">
+              <div className="text-2xl font-bold" style={{ color: 'var(--color-success)' }}>∞</div>
+              <div className="text-sm" style={{ color: 'var(--text-muted)' }}>Possibilities</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Council Debate Phase */}
+      {phase === 'council' && (
+        <div className="container mx-auto px-6 py-12 max-w-6xl">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-3 mb-4">
+              <div className="w-3 h-3 rounded-full animate-pulse" style={{ background: 'var(--color-success)' }} />
+              <h2 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                Council Chamber
+              </h2>
+            </div>
+            <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>
+              5 AI twins are debating your request in parallel...
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-6">
+            {/* Council Twins */}
+            <div className="lg:col-span-1 space-y-4">
+              {COUNCIL_TWINS.map((twin) => {
+                const Icon = twin.icon;
+                const isActive = councilMessages.some(m => m.twinId === twin.id);
+                return (
+                  <div
+                    key={twin.id}
+                    className={`glass-card p-4 transition-all ${
+                      isActive ? 'animate-pulse-glow' : ''
+                    }`}
+                    style={{
+                      borderTop: `3px solid ${twin.color}`,
+                      opacity: isActive ? 1 : 0.5,
+                    }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-12 h-12 rounded-xl flex items-center justify-center"
+                        style={{ background: `${twin.color}20` }}
+                      >
+                        <Icon className="w-6 h-6" style={{ color: twin.color }} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                          {twin.name}
+                        </div>
+                        <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                          {twin.description}
+                        </div>
+                      </div>
+                      {isActive && (
+                        <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: twin.color }} />
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Debate Feed */}
+            <div className="lg:col-span-2 glass-card p-6" style={{ minHeight: '400px' }}>
+              <h3 className="font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
+                Live Discussion
+              </h3>
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {councilMessages.length === 0 ? (
+                  <div className="text-center py-12" style={{ color: 'var(--text-muted)' }}>
+                    <div className="w-12 h-12 mx-auto mb-4 rounded-full border-2 border-dashed animate-spin"
+                         style={{ borderColor: 'var(--glass-border)' }} />
+                    <p>Initializing Council Twins...</p>
+                  </div>
+                ) : (
+                  councilMessages.map((msg, idx) => {
+                    const twin = COUNCIL_TWINS.find(t => t.id === msg.twinId);
+                    if (!twin) return null;
+                    const Icon = twin.icon;
+                    return (
+                      <div
+                        key={idx}
+                        className="flex items-start gap-3 p-3 rounded-lg"
+                        style={{ background: 'rgba(255, 255, 255, 0.03)' }}
+                      >
+                        <div
+                          className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                          style={{ background: `${twin.color}20` }}
+                        >
+                          <Icon className="w-4 h-4" style={{ color: twin.color }} />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-sm font-medium" style={{ color: twin.color }}>
+                              {twin.name}
+                            </span>
+                            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                              {msg.timestamp.toLocaleTimeString()}
+                            </span>
+                          </div>
+                          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                            {msg.message}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+                {councilMessages.length > 0 && (
+                  <div className="flex items-center gap-2 p-3 rounded-lg"
+                       style={{ background: 'rgba(16, 185, 129, 0.1)' }}>
+                    <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--color-success)' }} />
+                    <span className="text-sm" style={{ color: 'var(--color-success)' }}>
+                      Synthesizing consensus and recommendations...
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Review Phase */}
+      {phase === 'review' && (
+        <div className="container mx-auto px-6 py-12 max-w-6xl">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-3 mb-4">
+              <CheckCircle2 className="w-8 h-8" style={{ color: 'var(--color-success)' }} />
+              <h2 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                Council Deliberation Complete
+              </h2>
+            </div>
+            <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>
+              Review the plan before execution begins
+            </p>
+          </div>
+
+          {/* Tab Navigation */}
+          <div className="flex gap-2 mb-6">
+            <button
+              onClick={() => setSelectedTab('brd')}
+              className={`px-6 py-3 rounded-xl font-medium transition-all ${
+                selectedTab === 'brd' ? 'glass-btn-primary' : 'glass-btn'
+              }`}
+            >
+              <FileText className="w-5 h-5 inline mr-2" />
+              Business Requirements
+            </button>
+            <button
+              onClick={() => setSelectedTab('architecture')}
+              className={`px-6 py-3 rounded-xl font-medium transition-all ${
+                selectedTab === 'architecture' ? 'glass-btn-primary' : 'glass-btn'
+              }`}
+            >
+              <Network className="w-5 h-5 inline mr-2" />
+              Architecture
+            </button>
+            <button
+              onClick={() => setSelectedTab('agents')}
+              className={`px-6 py-3 rounded-xl font-medium transition-all ${
+                selectedTab === 'agents' ? 'glass-btn-primary' : 'glass-btn'
+              }`}
+            >
+              <Users className="w-5 h-5 inline mr-2" />
+              Active Agents
+            </button>
+          </div>
+
+          {/* Document Panel */}
+          <div className="glass-card p-8 mb-8 min-h-96">
+            {selectedTab === 'brd' && (
+              <div>
+                <h3 className="text-2xl font-bold mb-4" style={{ color: 'var(--text-primary)' }}>
+                  Business Requirements Document
+                </h3>
+                <div className="space-y-4" style={{ color: 'var(--text-secondary)' }}>
+                  <div>
+                    <h4 className="font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Project Overview</h4>
+                    <p>{userInput}</p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Key Requirements</h4>
+                    <ul className="list-disc list-inside space-y-2">
+                      <li>Secure user authentication with session management</li>
+                      <li>Stripe integration for payment processing</li>
+                      <li>Real-time inventory tracking and updates</li>
+                      <li>Admin dashboard for order management</li>
+                      <li>Responsive design across all devices</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Council Recommendations</h4>
+                    <ul className="list-disc list-inside space-y-2">
+                      <li>Start with MVP: Product catalog + Checkout + Auth</li>
+                      <li>Use Next.js 14 with App Router for optimal performance</li>
+                      <li>Implement webhook handlers for Stripe events</li>
+                      <li>Consider Redis for session management</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {selectedTab === 'architecture' && (
+              <div>
+                <h3 className="text-2xl font-bold mb-4" style={{ color: 'var(--text-primary)' }}>
+                  System Architecture
+                </h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="glass-card p-4">
+                    <h4 className="font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>Frontend</h4>
+                    <div className="space-y-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                      <div>• Next.js 14 (App Router)</div>
+                      <div>• React 18 + TypeScript</div>
+                      <div>• Tailwind CSS + Framer Motion</div>
+                      <div>• React Query for state</div>
+                    </div>
+                  </div>
+                  <div className="glass-card p-4">
+                    <h4 className="font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>Backend</h4>
+                    <div className="space-y-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                      <div>• Next.js API Routes</div>
+                      <div>• Stripe API for payments</div>
+                      <div>• PostgreSQL + Prisma</div>
+                      <div>• NextAuth.js for auth</div>
+                    </div>
+                  </div>
+                  <div className="glass-card p-4">
+                    <h4 className="font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>Infrastructure</h4>
+                    <div className="space-y-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                      <div>• Vercel for hosting</div>
+                      <div>• Supabase for database</div>
+                      <div>• Stripe Webhooks</div>
+                      <div>• CDN for static assets</div>
+                    </div>
+                  </div>
+                  <div className="glass-card p-4">
+                    <h4 className="font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>Security</h4>
+                    <div className="space-y-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                      <div>• HTTPS everywhere</div>
+                      <div>• CSRF protection</div>
+                      <div>• Input validation</div>
+                      <div>• Rate limiting</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {selectedTab === 'agents' && (
+              <div>
+                <h3 className="text-2xl font-bold mb-4" style={{ color: 'var(--text-primary)' }}>
+                  Required Skill Twins
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {SKILL_TWINS.map((twin) => {
+                    const Icon = twin.icon;
+                    return (
+                      <div key={twin.id} className="glass-card p-4">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div
+                            className="w-10 h-10 rounded-lg flex items-center justify-center"
+                            style={{ background: `${twin.color}20` }}
+                          >
+                            <Icon className="w-5 h-5" style={{ color: twin.color }} />
+                          </div>
+                          <div className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                            {twin.name}
+                          </div>
+                        </div>
+                        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                          {twin.id === 'research' && 'Market analysis, competitor research, feature validation'}
+                          {twin.id === 'content' && 'Copywriting, documentation, help content'}
+                          {twin.id === 'design' && 'UI/UX design, wireframes, prototypes'}
+                          {twin.id === 'growth' && 'Growth strategy, user acquisition, analytics'}
+                          {twin.id === 'code' && 'Frontend/backend development, testing, deployment'}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Approval Bar */}
+          <div className="glass-card p-6">
+            <div className="flex flex-wrap gap-4 justify-center">
+              <button
+                onClick={handleApprove}
+                className="glass-btn-primary px-8 py-3 rounded-xl font-semibold flex items-center gap-2"
+              >
+                <CheckCircle2 className="w-5 h-5" />
+                Approve & Start Building
+              </button>
+              <button
+                onClick={handleModify}
+                className="glass-btn px-8 py-3 rounded-xl font-semibold flex items-center gap-2"
+              >
+                <Edit3 className="w-5 h-5" />
+                Modify Request
+              </button>
+              <button
+                onClick={handleReject}
+                className="glass-btn px-8 py-3 rounded-xl font-semibold flex items-center gap-2"
+                style={{ borderColor: 'var(--color-error)', color: 'var(--color-error)' }}
+              >
+                <XCircle className="w-5 h-5" />
+                Reject Plan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Execution Phase */}
+      {phase === 'execution' && (
+        <div className="container mx-auto px-6 py-12 max-w-6xl">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-3 mb-4">
+              <Rocket className="w-8 h-8" style={{ color: 'var(--color-primary)' }} />
+              <h2 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                Execution in Progress
+              </h2>
+            </div>
+            <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>
+              Skill Twins are building your project
+            </p>
+          </div>
+
+          {/* Active Agents Grid */}
+          <div className="grid md:grid-cols-2 gap-6">
+            {activeAgents.map((agent) => {
+              const twin = SKILL_TWINS.find(t => t.id === agent.id);
+              if (!twin) return null;
+              const Icon = twin.icon;
+              return (
+                <div key={agent.id} className="glass-card p-6">
+                  <div className="flex items-start gap-4 mb-4">
+                    <div
+                      className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                      style={{
+                        background: `${twin.color}20`,
+                        opacity: agent.status === 'pending' ? 0.5 : 1,
+                      }}
+                    >
+                      <Icon className="w-6 h-6" style={{ color: twin.color }} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                          {agent.name}
+                        </h3>
+                        <span
                           className="text-xs px-2 py-1 rounded-full"
                           style={{
-                            background: activity.type === 'council' 
+                            background: agent.status === 'completed'
+                              ? 'rgba(16, 185, 129, 0.2)'
+                              : agent.status === 'active'
                               ? 'rgba(59, 130, 246, 0.2)'
-                              : activity.type === 'skill'
-                              ? 'rgba(139, 92, 246, 0.2)'
-                              : 'rgba(16, 185, 129, 0.2)',
-                            color: activity.type === 'council'
+                              : 'rgba(148, 163, 184, 0.2)',
+                            color: agent.status === 'completed'
+                              ? 'var(--color-success)'
+                              : agent.status === 'active'
                               ? 'var(--color-primary)'
-                              : activity.type === 'skill'
-                              ? 'var(--color-secondary)'
-                              : 'var(--color-success)',
+                              : 'var(--text-muted)',
                           }}
                         >
-                          {activity.type === 'council' ? 'Council' : activity.type === 'skill' ? 'Skill' : 'Team'}
-                        </span>
-                        <span 
-                          className="text-xs"
-                          style={{ color: 'var(--text-muted)' }}
-                        >
-                          {activity.timestamp}
+                          {agent.status}
                         </span>
                       </div>
-                      <p 
-                        className="font-medium mb-1 truncate"
-                        style={{ color: 'var(--text-primary)' }}
-                      >
-                        {activity.question}
+                      <p className="text-sm mb-3" style={{ color: 'var(--text-secondary)' }}>
+                        {agent.task}
                       </p>
-                      <p 
-                        className="text-sm line-clamp-2"
-                        style={{ color: 'var(--text-secondary)' }}
-                      >
-                        {activity.summary}
-                      </p>
-                      <div className="mt-2 flex items-center gap-2">
-                        <div 
-                          className="text-xs"
-                          style={{ color: 'var(--text-muted)' }}
-                        >
-                          Confidence: {Math.round(activity.confidence * 100)}%
-                        </div>
-                        <div 
-                          className="flex-1 h-1 rounded-full"
+
+                      {/* Progress Bar */}
+                      <div className="mb-2">
+                        <div
+                          className="h-2 rounded-full"
                           style={{ background: 'rgba(255, 255, 255, 0.1)' }}
                         >
-                          <div 
-                            className="h-1 rounded-full"
-                            style={{ 
-                              width: `${activity.confidence * 100}%`,
-                              background: activity.confidence > 0.8 
-                                ? 'var(--color-success)'
-                                : activity.confidence > 0.6
-                                ? 'var(--color-warning)'
-                                : 'var(--color-error)',
+                          <div
+                            className="h-2 rounded-full transition-all duration-500"
+                            style={{
+                              width: `${agent.progress}%`,
+                              background: twin.color,
                             }}
                           />
                         </div>
                       </div>
+
+                      <div className="flex items-center justify-between text-xs" style={{ color: 'var(--text-muted)' }}>
+                        <span>{agent.progress}% complete</span>
+                        {agent.status === 'active' && (
+                          <div className="flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            <span>~{Math.ceil((100 - agent.progress) / 10)} min remaining</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              );
+            })}
           </div>
-        </div>
 
-        {/* Right Sidebar - Active Roster */}
-        <div className="space-y-6">
-          {/* Active Twins */}
-          <div 
-            className="p-6 rounded-xl"
-            style={{
-              background: 'var(--glass-bg)',
-              border: '1px solid var(--glass-border)',
-            }}
-          >
+          {/* Overall Progress */}
+          <div className="glass-card p-6 mt-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
-                Active Roster
-              </h2>
-              <Link 
-                href="/twins"
-                className="text-sm"
-                style={{ color: 'var(--color-primary)' }}
-              >
-                Manage →
-              </Link>
+              <h3 className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                Overall Progress
+              </h3>
+              <span className="text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>
+                {Math.round(activeAgents.reduce((acc, a) => acc + a.progress, 0) / activeAgents.length)}%
+              </span>
             </div>
-
-            <div className="space-y-3">
-              {ACTIVE_TWINS.map((twin) => (
-                <div
-                  key={twin.id}
-                  className="flex items-center gap-3 p-3 rounded-lg"
-                  style={{ background: 'rgba(255, 255, 255, 0.02)' }}
-                >
-                  <div 
-                    className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
-                    style={{
-                      background: twin.status === 'active' 
-                        ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2))'
-                        : 'var(--glass-bg)',
-                      boxShadow: twin.status === 'active' 
-                        ? '0 0 20px rgba(59, 130, 246, 0.3)'
-                        : 'none',
-                    }}
-                  >
-                    {twin.emoji}
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-medium" style={{ color: 'var(--text-primary)' }}>
-                      {twin.name}
-                    </div>
-                    <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                      {twin.lastActive}
-                    </div>
-                  </div>
-                  <div 
-                    className="w-2 h-2 rounded-full"
-                    style={{
-                      background: twin.status === 'active' 
-                        ? 'var(--color-success)'
-                        : 'var(--color-warning)',
-                      boxShadow: twin.status === 'active' 
-                        ? '0 0 10px var(--color-success)'
-                        : 'none',
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Memory Health */}
-          <div 
-            className="p-6 rounded-xl"
-            style={{
-              background: 'var(--glass-bg)',
-              border: '1px solid var(--glass-border)',
-            }}
-          >
-            <h2 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
-              Memory Health
-            </h2>
-
-            {/* Conversation Memory */}
-            <div className="mb-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                  Conversation
-                </span>
-                <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-                  847 KB
-                </span>
-              </div>
-              <div 
-                className="h-2 rounded-full"
-                style={{ background: 'rgba(255, 255, 255, 0.1)' }}
-              >
-                <div 
-                  className="h-2 rounded-full"
-                  style={{ width: '35%', background: 'var(--color-primary)' }}
-                />
-              </div>
-            </div>
-
-            {/* Contextual Memory */}
-            <div className="mb-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                  Contextual
-                </span>
-                <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-                  1.2 MB
-                </span>
-              </div>
-              <div 
-                className="h-2 rounded-full"
-                style={{ background: 'rgba(255, 255, 255, 0.1)' }}
-              >
-                <div 
-                  className="h-2 rounded-full"
-                  style={{ width: '50%', background: 'var(--color-secondary)' }}
-                />
-              </div>
-            </div>
-
-            {/* Project Memory */}
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                  Project
-                </span>
-                <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-                  2.4 MB
-                </span>
-              </div>
-              <div 
-                className="h-2 rounded-full"
-                style={{ background: 'rgba(255, 255, 255, 0.1)' }}
-              >
-                <div 
-                  className="h-2 rounded-full"
-                  style={{ width: '75%', background: 'var(--color-success)' }}
-                />
-              </div>
-            </div>
-
-            <Link
-              href="/memory"
-              className="block mt-4 text-center py-2 rounded-lg text-sm"
-              style={{
-                background: 'rgba(255, 255, 255, 0.05)',
-                color: 'var(--text-secondary)',
-              }}
+            <div
+              className="h-3 rounded-full"
+              style={{ background: 'rgba(255, 255, 255, 0.1)' }}
             >
-              View Memory →
-            </Link>
+              <div
+                className="h-3 rounded-full transition-all duration-500"
+                style={{
+                  width: `${activeAgents.reduce((acc, a) => acc + a.progress, 0) / activeAgents.length}%`,
+                  background: 'linear-gradient(90deg, var(--color-primary), var(--color-secondary))',
+                }}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
