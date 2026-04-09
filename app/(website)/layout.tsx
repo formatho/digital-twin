@@ -1,4 +1,5 @@
 import '../../src/styles/globals.css';
+import { WebsiteLayoutClient } from './WebsiteLayoutClient';
 
 export const metadata = {
   title: 'Digital Twin OS - AI-Powered Decision Intelligence',
@@ -22,9 +23,5 @@ export default function WebsiteLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <div className="website-layout">
-      {children}
-    </div>
-  );
+  return <WebsiteLayoutClient>{children}</WebsiteLayoutClient>;
 }
