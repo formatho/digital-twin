@@ -33,10 +33,7 @@ export function OSLayoutClient({
   children: React.ReactNode;
 }) {
   return (
-    <div
-      className="min-h-screen flex"
-      style={{ background: 'var(--bg-dark)' }}
-    >
+    <div className="min-h-screen flex bg-gray-50">
       {/* Persistent Sidebar */}
       <Sidebar />
 

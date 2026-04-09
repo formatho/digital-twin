@@ -44,12 +44,7 @@ export default function Sidebar() {
       {/* Mobile Toggle Button */}
       <motion.button
         onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-3 rounded-xl backdrop-blur-xl"
-        style={{
-          background: 'var(--glass-bg)',
-          border: '1px solid var(--glass-border)',
-          color: 'var(--text-primary)',
-        }}
+        className="lg:hidden fixed top-4 left-4 z-50 p-3 rounded-xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow text-gray-700"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         aria-label="Toggle navigation"
@@ -104,24 +99,20 @@ export default function Sidebar() {
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
         style={{
-          background: 'var(--bg-dark-secondary)',
-          borderRight: '1px solid var(--glass-border)',
+          background: '#ffffff',
+          borderRight: '1px solid #e5e7eb',
         }}
       >
         <div className="flex flex-col h-full">
           {/* Logo / Brand */}
           <motion.div
             className="p-6 border-b overflow-hidden"
-            style={{ borderColor: 'var(--glass-border)' }}
+            style={{ borderColor: '#e5e7eb' }}
             animate={{ width: isCollapsed ? '5rem' : '16rem' }}
           >
             <Link href="/dashboard" className="flex items-center gap-3">
               <motion.div
-                className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{
-                  background: 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))',
-                  boxShadow: '0 0 20px rgba(59, 130, 246, 0.3)',
-                }}
+                className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-blue-600 to-purple-600 text-white"
                 whileHover={{ scale: 1.05 }}
               >
                 <span className="text-xl">🧬</span>
@@ -134,11 +125,8 @@ export default function Sidebar() {
                     exit={{ opacity: 0, x: -10 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <div className="font-bold text-lg gradient-text">Twin OS</div>
-                    <div
-                      className="text-xs"
-                      style={{ color: 'var(--text-muted)' }}
-                    >
+                    <div className="font-bold text-lg bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Twin OS</div>
+                    <div className="text-xs text-gray-500">
                       Digital Twin OS
                     </div>
                   </motion.div>
@@ -159,39 +147,17 @@ export default function Sidebar() {
                 <Link
                   href={item.href}
                   onClick={() => setIsMobileOpen(false)}
-                  className="relative flex items-center gap-3 px-4 py-3 rounded-xl overflow-hidden group"
-                  style={{
-                    background: isActive(item.href)
-                      ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2))'
-                      : 'transparent',
-                    border: isActive(item.href)
-                      ? '1px solid rgba(59, 130, 246, 0.3)'
-                      : '1px solid transparent',
-                  }}
+                  className={`relative flex items-center gap-3 px-4 py-3 rounded-xl overflow-hidden group transition-colors ${
+                    isActive(item.href)
+                      ? 'bg-blue-50 border border-blue-200'
+                      : 'hover:bg-gray-100 border border-transparent'
+                  }`}
                 >
-                  {/* Ambient glow for active state */}
-                  {isActive(item.href) && (
-                    <motion.div
-                      className="absolute inset-0 rounded-xl opacity-50"
-                      style={{
-                        background: 'radial-gradient(circle at center, rgba(59, 130, 246, 0.15), transparent 70%)',
-                      }}
-                      animate={{
-                        opacity: [0.3, 0.5, 0.3],
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: 'easeInOut',
-                      }}
-                    />
-                  )}
-
                   {/* Icon */}
                   <motion.div
                     className="flex-shrink-0 relative z-10"
                     style={{
-                      color: isActive(item.href) ? 'var(--color-primary)' : 'var(--text-secondary)',
+                      color: isActive(item.href) ? '#3b82f6' : '#64748b',
                     }}
                     whileHover={{ scale: 1.1 }}
                   >
@@ -208,16 +174,12 @@ export default function Sidebar() {
                         transition={{ duration: 0.2 }}
                         className="flex-1 min-w-0 relative z-10"
                       >
-                        <div
-                          className="font-medium truncate text-sm"
-                          style={{ color: isActive(item.href) ? 'var(--text-primary)' : 'var(--text-secondary)' }}
-                        >
+                        <div className={`font-medium truncate text-sm ${
+                          isActive(item.href) ? 'text-gray-900' : 'text-gray-700'
+                        }`}>
                           {item.label}
                         </div>
-                        <div
-                          className="text-xs truncate"
-                          style={{ color: 'var(--text-muted)' }}
-                        >
+                        <div className="text-xs truncate text-gray-500">
                           {item.description}
                         </div>
                       </motion.div>
@@ -227,11 +189,7 @@ export default function Sidebar() {
                   {/* Active indicator */}
                   {isActive(item.href) && (
                     <motion.div
-                      className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-full"
-                      style={{
-                        background: 'linear-gradient(to bottom, var(--color-primary), var(--color-secondary))',
-                        boxShadow: '0 0 10px rgba(59, 130, 246, 0.5)',
-                      }}
+                      className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-full bg-blue-600"
                       layoutId="activeIndicator"
                     />
                   )}
@@ -243,17 +201,12 @@ export default function Sidebar() {
           {/* Collapse Toggle */}
           <motion.div
             className="p-4 border-t overflow-hidden hidden lg:block"
-            style={{ borderColor: 'var(--glass-border)' }}
+            style={{ borderColor: '#e5e7eb' }}
             animate={{ width: isCollapsed ? '5rem' : '16rem' }}
           >
             <motion.button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg backdrop-blur-xl transition-colors"
-              style={{
-                background: 'var(--glass-bg)',
-                border: '1px solid var(--glass-border)',
-                color: 'var(--text-secondary)',
-              }}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gray-100 border border-gray-200 text-gray-700 hover:bg-gray-200 transition-colors"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >

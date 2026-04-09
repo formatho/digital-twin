@@ -174,41 +174,33 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--bg-dark)' }}>
+    <div className="min-h-screen bg-gray-50">
       {/* Hero Input Section */}
       {phase === 'input' && (
         <div className="container mx-auto px-6 py-12 max-w-4xl">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 mb-6">
-              <Rocket className="w-8 h-8" style={{ color: 'var(--color-primary)' }} />
+              <Rocket className="w-8 h-8 text-blue-600" />
               <h1 className="text-4xl lg:text-5xl font-bold">
-                <span className="gradient-text">AI Project Builder</span>
+                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  AI Project Builder
+                </span>
               </h1>
             </div>
-            <p className="text-xl" style={{ color: 'var(--text-secondary)' }}>
+            <p className="text-xl text-gray-600">
               5 Council Twins debate your vision. Skill Twins execute with precision.
             </p>
           </div>
 
-          <div
-            className="glass-card p-8 mb-8"
-            style={{
-              background: 'var(--glass-bg)',
-              border: '1px solid var(--glass-border)',
-            }}
-          >
-            <label className="block text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
+          <div className="bg-white p-8 mb-8 rounded-xl border border-gray-200 shadow-sm">
+            <label className="block text-lg font-semibold mb-4 text-gray-900">
               What do you want to build?
             </label>
             <textarea
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
               placeholder="Describe your project in detail... (e.g., 'Build me an e-commerce platform with Stripe payments, user authentication, and inventory management')"
-              className="glass-input w-full h-48 text-base resize-none"
-              style={{
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid var(--glass-border)',
-              }}
+              className="w-full h-48 text-base resize-none border border-gray-300 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-400"
             />
 
             <div className="flex items-center justify-between mt-6">
@@ -218,15 +210,15 @@ export default function DashboardPage() {
                   return (
                     <div
                       key={twin.id}
-                      className="w-10 h-10 rounded-lg flex items-center justify-center"
-                      style={{ background: `${twin.color}20` }}
+                      className="w-10 h-10 rounded-lg flex items-center justify-center bg-opacity-20"
+                      style={{ backgroundColor: `${twin.color}20` }}
                       title={twin.name}
                     >
                       <Icon className="w-5 h-5" style={{ color: twin.color }} />
                     </div>
                   );
                 })}
-                <span className="text-sm ml-2" style={{ color: 'var(--text-muted)' }}>
+                <span className="text-sm ml-2 text-gray-500">
                   +2 more twins ready
                 </span>
               </div>
@@ -234,7 +226,7 @@ export default function DashboardPage() {
               <button
                 onClick={handleSubmit}
                 disabled={!userInput.trim() || isSubmitting}
-                className="glass-btn-primary px-8 py-3 rounded-xl font-semibold flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-8 py-3 rounded-xl font-semibold flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {isSubmitting ? (
                   <>
@@ -253,17 +245,17 @@ export default function DashboardPage() {
 
           {/* Quick Stats */}
           <div className="grid grid-cols-3 gap-4">
-            <div className="glass-card p-4 text-center">
-              <div className="text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>5</div>
-              <div className="text-sm" style={{ color: 'var(--text-muted)' }}>Council Twins</div>
+            <div className="bg-white p-4 text-center border border-gray-200 rounded-xl shadow-sm">
+              <div className="text-2xl font-bold text-blue-600">5</div>
+              <div className="text-sm text-gray-600">Council Twins</div>
             </div>
-            <div className="glass-card p-4 text-center">
-              <div className="text-2xl font-bold" style={{ color: 'var(--color-secondary)' }}>10</div>
-              <div className="text-sm" style={{ color: 'var(--text-muted)' }}>Skill Twins</div>
+            <div className="bg-white p-4 text-center border border-gray-200 rounded-xl shadow-sm">
+              <div className="text-2xl font-bold text-purple-600">10</div>
+              <div className="text-sm text-gray-600">Skill Twins</div>
             </div>
-            <div className="glass-card p-4 text-center">
-              <div className="text-2xl font-bold" style={{ color: 'var(--color-success)' }}>∞</div>
-              <div className="text-sm" style={{ color: 'var(--text-muted)' }}>Possibilities</div>
+            <div className="bg-white p-4 text-center border border-gray-200 rounded-xl shadow-sm">
+              <div className="text-2xl font-bold text-green-600">∞</div>
+              <div className="text-sm text-gray-600">Possibilities</div>
             </div>
           </div>
         </div>
@@ -274,12 +266,12 @@ export default function DashboardPage() {
         <div className="container mx-auto px-6 py-12 max-w-6xl">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-3 mb-4">
-              <div className="w-3 h-3 rounded-full animate-pulse" style={{ background: 'var(--color-success)' }} />
-              <h2 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
+              <div className="w-3 h-3 rounded-full animate-pulse bg-green-500" />
+              <h2 className="text-3xl font-bold text-gray-900">
                 Council Chamber
               </h2>
             </div>
-            <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>
+            <p className="text-lg text-gray-600">
               5 AI twins are debating your request in parallel...
             </p>
           </div>
@@ -293,26 +285,26 @@ export default function DashboardPage() {
                 return (
                   <div
                     key={twin.id}
-                    className={`glass-card p-4 transition-all ${
-                      isActive ? 'animate-pulse-glow' : ''
+                    className={`bg-white p-4 transition-all border rounded-xl ${
+                      isActive ? 'shadow-md' : 'shadow-sm opacity-60'
                     }`}
                     style={{
                       borderTop: `3px solid ${twin.color}`,
-                      opacity: isActive ? 1 : 0.5,
+                      borderColor: isActive ? twin.color : '#e5e7eb',
                     }}
                   >
                     <div className="flex items-center gap-3">
                       <div
                         className="w-12 h-12 rounded-xl flex items-center justify-center"
-                        style={{ background: `${twin.color}20` }}
+                        style={{ backgroundColor: `${twin.color}20` }}
                       >
                         <Icon className="w-6 h-6" style={{ color: twin.color }} />
                       </div>
                       <div className="flex-1">
-                        <div className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                        <div className="font-semibold text-gray-900">
                           {twin.name}
                         </div>
-                        <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                        <div className="text-xs text-gray-500">
                           {twin.description}
                         </div>
                       </div>
@@ -326,15 +318,14 @@ export default function DashboardPage() {
             </div>
 
             {/* Debate Feed */}
-            <div className="lg:col-span-2 glass-card p-6" style={{ minHeight: '400px' }}>
-              <h3 className="font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
+            <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-gray-200 shadow-sm min-h-96">
+              <h3 className="font-semibold mb-4 text-gray-900">
                 Live Discussion
               </h3>
               <div className="space-y-3 max-h-96 overflow-y-auto">
                 {councilMessages.length === 0 ? (
-                  <div className="text-center py-12" style={{ color: 'var(--text-muted)' }}>
-                    <div className="w-12 h-12 mx-auto mb-4 rounded-full border-2 border-dashed animate-spin"
-                         style={{ borderColor: 'var(--glass-border)' }} />
+                  <div className="text-center py-12 text-gray-500">
+                    <div className="w-12 h-12 mx-auto mb-4 rounded-full border-2 border-dashed border-gray-300 animate-spin" />
                     <p>Initializing Council Twins...</p>
                   </div>
                 ) : (
@@ -345,12 +336,11 @@ export default function DashboardPage() {
                     return (
                       <div
                         key={idx}
-                        className="flex items-start gap-3 p-3 rounded-lg"
-                        style={{ background: 'rgba(255, 255, 255, 0.03)' }}
+                        className="flex items-start gap-3 p-3 rounded-lg bg-gray-50"
                       >
                         <div
                           className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                          style={{ background: `${twin.color}20` }}
+                          style={{ backgroundColor: `${twin.color}20` }}
                         >
                           <Icon className="w-4 h-4" style={{ color: twin.color }} />
                         </div>
@@ -359,11 +349,11 @@ export default function DashboardPage() {
                             <span className="text-sm font-medium" style={{ color: twin.color }}>
                               {twin.name}
                             </span>
-                            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                            <span className="text-xs text-gray-500">
                               {msg.timestamp.toLocaleTimeString()}
                             </span>
                           </div>
-                          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                          <p className="text-sm text-gray-700">
                             {msg.message}
                           </p>
                         </div>
@@ -372,10 +362,9 @@ export default function DashboardPage() {
                   })
                 )}
                 {councilMessages.length > 0 && (
-                  <div className="flex items-center gap-2 p-3 rounded-lg"
-                       style={{ background: 'rgba(16, 185, 129, 0.1)' }}>
-                    <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--color-success)' }} />
-                    <span className="text-sm" style={{ color: 'var(--color-success)' }}>
+                  <div className="flex items-center gap-2 p-3 rounded-lg bg-green-50 border border-green-200">
+                    <div className="w-2 h-2 rounded-full animate-pulse bg-green-600" />
+                    <span className="text-sm text-green-700">
                       Synthesizing consensus and recommendations...
                     </span>
                   </div>
@@ -391,12 +380,12 @@ export default function DashboardPage() {
         <div className="container mx-auto px-6 py-12 max-w-6xl">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-3 mb-4">
-              <CheckCircle2 className="w-8 h-8" style={{ color: 'var(--color-success)' }} />
-              <h2 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
+              <CheckCircle2 className="w-8 h-8 text-green-600" />
+              <h2 className="text-3xl font-bold text-gray-900">
                 Council Deliberation Complete
               </h2>
             </div>
-            <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>
+            <p className="text-lg text-gray-600">
               Review the plan before execution begins
             </p>
           </div>
@@ -405,47 +394,53 @@ export default function DashboardPage() {
           <div className="flex gap-2 mb-6">
             <button
               onClick={() => setSelectedTab('brd')}
-              className={`px-6 py-3 rounded-xl font-medium transition-all ${
-                selectedTab === 'brd' ? 'glass-btn-primary' : 'glass-btn'
+              className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
+                selectedTab === 'brd'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
               }`}
             >
-              <FileText className="w-5 h-5 inline mr-2" />
+              <FileText className="w-5 h-5" />
               Business Requirements
             </button>
             <button
               onClick={() => setSelectedTab('architecture')}
-              className={`px-6 py-3 rounded-xl font-medium transition-all ${
-                selectedTab === 'architecture' ? 'glass-btn-primary' : 'glass-btn'
+              className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
+                selectedTab === 'architecture'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
               }`}
             >
-              <Network className="w-5 h-5 inline mr-2" />
+              <Network className="w-5 h-5" />
               Architecture
             </button>
             <button
               onClick={() => setSelectedTab('agents')}
-              className={`px-6 py-3 rounded-xl font-medium transition-all ${
-                selectedTab === 'agents' ? 'glass-btn-primary' : 'glass-btn'
+              className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
+                selectedTab === 'agents'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
               }`}
             >
-              <Users className="w-5 h-5 inline mr-2" />
+              <Users className="w-5 h-5" />
               Active Agents
             </button>
           </div>
 
           {/* Document Panel */}
-          <div className="glass-card p-8 mb-8 min-h-96">
+          <div className="bg-white p-8 mb-8 min-h-96 rounded-xl border border-gray-200 shadow-sm">
             {selectedTab === 'brd' && (
               <div>
-                <h3 className="text-2xl font-bold mb-4" style={{ color: 'var(--text-primary)' }}>
+                <h3 className="text-2xl font-bold mb-4 text-gray-900">
                   Business Requirements Document
                 </h3>
-                <div className="space-y-4" style={{ color: 'var(--text-secondary)' }}>
+                <div className="space-y-4 text-gray-700">
                   <div>
-                    <h4 className="font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Project Overview</h4>
+                    <h4 className="font-semibold mb-2 text-gray-900">Project Overview</h4>
                     <p>{userInput}</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Key Requirements</h4>
+                    <h4 className="font-semibold mb-2 text-gray-900">Key Requirements</h4>
                     <ul className="list-disc list-inside space-y-2">
                       <li>Secure user authentication with session management</li>
                       <li>Stripe integration for payment processing</li>
@@ -455,7 +450,7 @@ export default function DashboardPage() {
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Council Recommendations</h4>
+                    <h4 className="font-semibold mb-2 text-gray-900">Council Recommendations</h4>
                     <ul className="list-disc list-inside space-y-2">
                       <li>Start with MVP: Product catalog + Checkout + Auth</li>
                       <li>Use Next.js 14 with App Router for optimal performance</li>
@@ -469,40 +464,40 @@ export default function DashboardPage() {
 
             {selectedTab === 'architecture' && (
               <div>
-                <h3 className="text-2xl font-bold mb-4" style={{ color: 'var(--text-primary)' }}>
+                <h3 className="text-2xl font-bold mb-4 text-gray-900">
                   System Architecture
                 </h3>
                 <div className="grid md:grid-cols-2 gap-6">
-                  <div className="glass-card p-4">
-                    <h4 className="font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>Frontend</h4>
-                    <div className="space-y-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h4 className="font-semibold mb-3 text-gray-900">Frontend</h4>
+                    <div className="space-y-2 text-sm text-gray-700">
                       <div>• Next.js 14 (App Router)</div>
                       <div>• React 18 + TypeScript</div>
                       <div>• Tailwind CSS + Framer Motion</div>
                       <div>• React Query for state</div>
                     </div>
                   </div>
-                  <div className="glass-card p-4">
-                    <h4 className="font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>Backend</h4>
-                    <div className="space-y-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h4 className="font-semibold mb-3 text-gray-900">Backend</h4>
+                    <div className="space-y-2 text-sm text-gray-700">
                       <div>• Next.js API Routes</div>
                       <div>• Stripe API for payments</div>
                       <div>• PostgreSQL + Prisma</div>
                       <div>• NextAuth.js for auth</div>
                     </div>
                   </div>
-                  <div className="glass-card p-4">
-                    <h4 className="font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>Infrastructure</h4>
-                    <div className="space-y-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h4 className="font-semibold mb-3 text-gray-900">Infrastructure</h4>
+                    <div className="space-y-2 text-sm text-gray-700">
                       <div>• Vercel for hosting</div>
                       <div>• Supabase for database</div>
                       <div>• Stripe Webhooks</div>
                       <div>• CDN for static assets</div>
                     </div>
                   </div>
-                  <div className="glass-card p-4">
-                    <h4 className="font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>Security</h4>
-                    <div className="space-y-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h4 className="font-semibold mb-3 text-gray-900">Security</h4>
+                    <div className="space-y-2 text-sm text-gray-700">
                       <div>• HTTPS everywhere</div>
                       <div>• CSRF protection</div>
                       <div>• Input validation</div>
@@ -515,26 +510,26 @@ export default function DashboardPage() {
 
             {selectedTab === 'agents' && (
               <div>
-                <h3 className="text-2xl font-bold mb-4" style={{ color: 'var(--text-primary)' }}>
+                <h3 className="text-2xl font-bold mb-4 text-gray-900">
                   Required Skill Twins
                 </h3>
                 <div className="grid md:grid-cols-2 gap-4">
                   {SKILL_TWINS.map((twin) => {
                     const Icon = twin.icon;
                     return (
-                      <div key={twin.id} className="glass-card p-4">
+                      <div key={twin.id} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                         <div className="flex items-center gap-3 mb-2">
                           <div
                             className="w-10 h-10 rounded-lg flex items-center justify-center"
-                            style={{ background: `${twin.color}20` }}
+                            style={{ backgroundColor: `${twin.color}20` }}
                           >
                             <Icon className="w-5 h-5" style={{ color: twin.color }} />
                           </div>
-                          <div className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                          <div className="font-semibold text-gray-900">
                             {twin.name}
                           </div>
                         </div>
-                        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                        <p className="text-sm text-gray-600">
                           {twin.id === 'research' && 'Market analysis, competitor research, feature validation'}
                           {twin.id === 'content' && 'Copywriting, documentation, help content'}
                           {twin.id === 'design' && 'UI/UX design, wireframes, prototypes'}
@@ -550,26 +545,25 @@ export default function DashboardPage() {
           </div>
 
           {/* Approval Bar */}
-          <div className="glass-card p-6">
+          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
             <div className="flex flex-wrap gap-4 justify-center">
               <button
                 onClick={handleApprove}
-                className="glass-btn-primary px-8 py-3 rounded-xl font-semibold flex items-center gap-2"
+                className="px-8 py-3 rounded-xl font-semibold flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 transition-colors"
               >
                 <CheckCircle2 className="w-5 h-5" />
                 Approve & Start Building
               </button>
               <button
                 onClick={handleModify}
-                className="glass-btn px-8 py-3 rounded-xl font-semibold flex items-center gap-2"
+                className="px-8 py-3 rounded-xl font-semibold flex items-center gap-2 bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 transition-colors"
               >
                 <Edit3 className="w-5 h-5" />
                 Modify Request
               </button>
               <button
                 onClick={handleReject}
-                className="glass-btn px-8 py-3 rounded-xl font-semibold flex items-center gap-2"
-                style={{ borderColor: 'var(--color-error)', color: 'var(--color-error)' }}
+                className="px-8 py-3 rounded-xl font-semibold flex items-center gap-2 bg-white text-red-600 border border-red-300 hover:bg-red-50 transition-colors"
               >
                 <XCircle className="w-5 h-5" />
                 Reject Plan
@@ -584,12 +578,12 @@ export default function DashboardPage() {
         <div className="container mx-auto px-6 py-12 max-w-6xl">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-3 mb-4">
-              <Rocket className="w-8 h-8" style={{ color: 'var(--color-primary)' }} />
-              <h2 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
+              <Rocket className="w-8 h-8 text-blue-600" />
+              <h2 className="text-3xl font-bold text-gray-900">
                 Execution in Progress
               </h2>
             </div>
-            <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>
+            <p className="text-lg text-gray-600">
               Skill Twins are building your project
             </p>
           </div>
@@ -601,12 +595,12 @@ export default function DashboardPage() {
               if (!twin) return null;
               const Icon = twin.icon;
               return (
-                <div key={agent.id} className="glass-card p-6">
+                <div key={agent.id} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                   <div className="flex items-start gap-4 mb-4">
                     <div
                       className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
                       style={{
-                        background: `${twin.color}20`,
+                        backgroundColor: `${twin.color}20`,
                         opacity: agent.status === 'pending' ? 0.5 : 1,
                       }}
                     >
@@ -614,48 +608,45 @@ export default function DashboardPage() {
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
-                        <h3 className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                        <h3 className="font-semibold text-gray-900">
                           {agent.name}
                         </h3>
                         <span
                           className="text-xs px-2 py-1 rounded-full"
                           style={{
-                            background: agent.status === 'completed'
+                            backgroundColor: agent.status === 'completed'
                               ? 'rgba(16, 185, 129, 0.2)'
                               : agent.status === 'active'
                               ? 'rgba(59, 130, 246, 0.2)'
                               : 'rgba(148, 163, 184, 0.2)',
                             color: agent.status === 'completed'
-                              ? 'var(--color-success)'
+                              ? '#10b981'
                               : agent.status === 'active'
-                              ? 'var(--color-primary)'
-                              : 'var(--text-muted)',
+                              ? '#3b82f6'
+                              : '#94a3b8',
                           }}
                         >
                           {agent.status}
                         </span>
                       </div>
-                      <p className="text-sm mb-3" style={{ color: 'var(--text-secondary)' }}>
+                      <p className="text-sm mb-3 text-gray-600">
                         {agent.task}
                       </p>
 
                       {/* Progress Bar */}
                       <div className="mb-2">
-                        <div
-                          className="h-2 rounded-full"
-                          style={{ background: 'rgba(255, 255, 255, 0.1)' }}
-                        >
+                        <div className="h-2 rounded-full bg-gray-200">
                           <div
                             className="h-2 rounded-full transition-all duration-500"
                             style={{
                               width: `${agent.progress}%`,
-                              background: twin.color,
+                              backgroundColor: twin.color,
                             }}
                           />
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between text-xs" style={{ color: 'var(--text-muted)' }}>
+                      <div className="flex items-center justify-between text-xs text-gray-500">
                         <span>{agent.progress}% complete</span>
                         {agent.status === 'active' && (
                           <div className="flex items-center gap-1">
@@ -672,24 +663,20 @@ export default function DashboardPage() {
           </div>
 
           {/* Overall Progress */}
-          <div className="glass-card p-6 mt-6">
+          <div className="bg-white p-6 mt-6 rounded-xl border border-gray-200 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+              <h3 className="font-semibold text-gray-900">
                 Overall Progress
               </h3>
-              <span className="text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>
+              <span className="text-2xl font-bold text-blue-600">
                 {Math.round(activeAgents.reduce((acc, a) => acc + a.progress, 0) / activeAgents.length)}%
               </span>
             </div>
-            <div
-              className="h-3 rounded-full"
-              style={{ background: 'rgba(255, 255, 255, 0.1)' }}
-            >
+            <div className="h-3 rounded-full bg-gray-200">
               <div
-                className="h-3 rounded-full transition-all duration-500"
+                className="h-3 rounded-full transition-all duration-500 bg-gradient-to-r from-blue-600 to-purple-600"
                 style={{
                   width: `${activeAgents.reduce((acc, a) => acc + a.progress, 0) / activeAgents.length}%`,
-                  background: 'linear-gradient(90deg, var(--color-primary), var(--color-secondary))',
                 }}
               />
             </div>
